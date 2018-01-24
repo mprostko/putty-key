@@ -238,8 +238,12 @@ module PuTTY
         #
         # raise [Errno::ENOENT] If the file specified by `path` does not exist.
         def self.open(path)
-          File.open(path.to_s, 'rb') do |file|
-            yield Reader.new(file)
+          if path.is_a?(StringIO)
+            yield Reader.new(path)
+          else
+            File.open(path.to_s, 'rb') do |file|
+              yield Reader.new(file)
+            end
           end
         end
 
@@ -315,8 +319,12 @@ module PuTTY
         # @raise [Errno::ENOENT] If a directory specified by `path` does not
         #   exist.
         def self.open(path)
-          File.open(path.to_s, 'wb') do |file|
-            yield Writer.new(file)
+          if path.is_a?(StringIO)
+            yield Writer.new(path)
+          else
+            File.open(path.to_s, 'wb') do |file|
+              yield Writer.new(file)
+            end
           end
         end
 
